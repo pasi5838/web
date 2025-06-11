@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kuis Hewan</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e8f5e9;
+      text-align: center;
+      padding: 1rem;
+      color: #2e7d32;
+    }
+    .quiz-image {
+      width: 90%;
+      max-width: 500px;
+      height: auto;
+      border-radius: 16px;
+      margin: 10px 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 12px 24px;
+      background-color: #66bb6a;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 80%;
+      max-width: 300px;
+    }
+    button:hover {
+      background-color: #4caf50;
+    }
+    #lives {
+      margin: 10px;
+      font-size: 24px;
+    }
+    #level-indicator {
+      font-size: 18px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kuis Nama Hewan 🐾</h1>
+  <div id="lives"></div>
+  <div id="level-indicator"></div>
+  <img id="image" class="quiz-image" src="" alt="Gambar Hewan" />
+  <div id="options"></div>
+  <script src="index.js"></script>
+  <script>
+    let current = 0;
+    let lives = 3;
+
+    function updateLives() {
+      document.getElementById("lives").innerHTML = "❤️".repeat(lives);
+    }
+
+    function showQuiz() {
+      if (current >= quizData.length || lives <= 0) {
+        document.body.innerHTML = "<h2>Game Selesai!</h2><p>Level yang dicapai: " + (current) + "</p>";
+        return;
+      }
+      const q = quizData[current];
+      document.getElementById("image").src = q.image;
+      document.getElementById("level-indicator").textContent = "Level " + (current + 1) + " / " + quizData.length;
+
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (opt === q.name) {
+            current++;
+          } else {
+            lives--;
+          }
+          updateLives();
+          showQuiz();
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    updateLives();
+    showQuiz();
+
+    // PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
